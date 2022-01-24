@@ -36,5 +36,6 @@ bag_reg_tidy <- bag_reg %>%
 # Export to CSV
 write.csv(bag_reg_tidy,"State_Bag_Regulations.csv", row.names = FALSE)
 
+
 ```
 
