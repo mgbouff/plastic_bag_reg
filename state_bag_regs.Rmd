@@ -1,0 +1,40 @@
+---
+title: "Plastic Bag Regulations by State"
+author: "Marie Bouffard"
+date: "1/24/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+```
+
+```{r}
+# Attach packages
+library(tidyverse)
+library(janitor)
+library(here)
+
+# Read in Plastic Bag Regulation Data
+bag_reg <- read.csv("Plastic_bag_reg.csv") %>% 
+  clean_names() %>% 
+  pivot_longer(i_states_with_statewide_plastic_bag_laws:states_with_no_statutes, names_to = "Regulation_Status", values_to = "State")
+
+# Set blanks to NA
+bag_reg[bag_reg == c("")] <- NA
+
+bag_reg_tidy <- bag_reg %>%
+  drop_na() %>%
+   mutate(Regulation_Status = case_when(
+    Regulation_Status == "i_states_with_statewide_plastic_bag_laws" ~ "Statewide Plastic Bag Laws",
+    Regulation_Status == "state_with_a_de_facto_statewide_plastic_bag_ban" ~ "De Facto Statewide Plastic Bag Ban",
+    Regulation_Status == "states_with_local_plastic_bag_ordinances" ~ "Local Plastic Bag Ordinances",
+    Regulation_Status == "states_with_preemptions_on_local_plastic_bag_ordinances" ~ "Preemptions on Local Plastic Bag Ordinances",
+    Regulation_Status == "state_with_preemption_and_local_plastic_bag_ordinances" ~ "Preemption and Local Plastic Bag Ordinances",
+    Regulation_Status == "states_with_no_statutes" ~ "No Statutes"))
+
+# Export to CSV
+write.csv(bag_reg_tidy,"State_Bag_Regulations.csv", row.names = FALSE)
+
+```
+
